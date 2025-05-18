@@ -1,19 +1,10 @@
 package com.example.auction.repository
 
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.AuctionRules
+import com.example.auction.model.*
 import com.example.auction.model.AuctionRules.Blind
 import com.example.auction.model.AuctionRules.Reverse
 import com.example.auction.model.AuctionRules.Vickrey
 import com.example.auction.model.AuctionState.valueOf
-import com.example.auction.model.AuctionWinner
-import com.example.auction.model.Bid
-import com.example.auction.model.BidId
-import com.example.auction.model.blindAuction
-import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.reverseAuction
-import com.example.auction.model.vickreyAuction
 import com.example.pii.UserId
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.jdbc.support.GeneratedKeyHolder
@@ -226,23 +217,17 @@ private fun ResultSet.toAuction(bids: MutableList<Bid>): Auction {
             MonetaryAmount(getBigDecimal("OWED").setScale(currency.defaultFractionDigits))
         )
     } else null
-    
-    val constructor = when (rules) {
-        Blind -> ::blindAuction
-        Vickrey -> ::vickreyAuction
-        Reverse -> ::reverseAuction
-    }
-    
-    return constructor(
-        UserId(getString("SELLER")),
-        getString("DESCRIPTION"),
-        currency,
-        MonetaryAmount(getBigDecimal("RESERVE").setScale(currency.defaultFractionDigits)),
-        MonetaryAmount(getBigDecimal("COMMISSION")),
-        MonetaryAmount(getBigDecimal("CHARGE_PER_BID")),
-        AuctionId(getLong("ID")),
-        bids,
-        valueOf(getString("STATE")),
-        winner
+    return Auction(
+        rules = rules,
+        seller = UserId(getString("SELLER")),
+        description = getString("DESCRIPTION"),
+        currency = currency,
+        reserve = MonetaryAmount(getBigDecimal("RESERVE").setScale(currency.defaultFractionDigits)),
+        commission = MonetaryAmount(getBigDecimal("COMMISSION")),
+        chargePerBid = MonetaryAmount(getBigDecimal("CHARGE_PER_BID")),
+        id = AuctionId(getLong("ID")),
+        bids = bids,
+        state = AuctionState.valueOf(getString("STATE")),
+        winner = winner
     )
 }
