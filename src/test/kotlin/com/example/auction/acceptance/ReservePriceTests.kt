@@ -2,7 +2,7 @@ package com.example.auction.acceptance
 
 import com.example.auction.service.Passed
 import com.example.auction.service.Sold
-import org.junit.jupiter.api.Assertions.assertEquals
+import kotlin.test.assertEquals
 import kotlin.test.Test
 
 interface ReservePriceTests : AuctionTesting {

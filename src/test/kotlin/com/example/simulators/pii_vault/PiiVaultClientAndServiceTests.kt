@@ -2,8 +2,8 @@ package com.example.simulators.pii_vault
 
 import com.example.pii.PiiVaultClient
 import com.example.pii.UserId
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import org.springframework.beans.factory.annotation.Autowired

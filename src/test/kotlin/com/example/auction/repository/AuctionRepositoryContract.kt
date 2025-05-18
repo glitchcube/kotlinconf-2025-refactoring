@@ -12,7 +12,7 @@ import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.ReverseAuction
 import com.example.auction.model.VickreyAuction
 import com.example.pii.UserId
-import org.junit.jupiter.api.Assertions.assertNotEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -53,8 +53,8 @@ interface AuctionRepositoryContract {
         auction.placeBid(bob, 2.EUR)
         repository.updateAuction(auction)
         
-        assertNotEquals(BidId.NONE, auction.bids[0], "bids[0]")
-        assertNotEquals(BidId.NONE, auction.bids[1], "bids[1]")
+        assertNotEquals(BidId.NONE, auction.bids[0].id, "bids[0]")
+        assertNotEquals(BidId.NONE, auction.bids[1].id, "bids[1]")
         assertNotEquals(auction.bids[0], auction.bids[1], "bid ids are not equal")
         
         val loaded = repository.getAuction(auction.id)
