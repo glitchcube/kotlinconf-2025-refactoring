@@ -1,0 +1,27 @@
+{
+  "charges" : [ {
+    "fee" : "bids",
+    "from" : "william",
+    "quantity" : 5,
+    "total" : "5.00 EUR",
+    "unit" : "1.00 EUR"
+  }, {
+    "fee" : "bids",
+    "from" : "brenda",
+    "quantity" : 3,
+    "total" : "3.00 EUR",
+    "unit" : "1.00 EUR"
+  }, {
+    "fee" : "bids",
+    "from" : "bob",
+    "quantity" : 4,
+    "total" : "4.00 EUR",
+    "unit" : "1.00 EUR"
+  } ],
+  "collect" : {
+    "amount" : "17.00 EUR",
+    "from" : "william",
+    "to" : "sally"
+  },
+  "order" : "auction:9123"
+}

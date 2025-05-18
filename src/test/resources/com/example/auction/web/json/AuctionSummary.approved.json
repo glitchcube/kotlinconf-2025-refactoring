@@ -1,0 +1,10 @@
+{
+  "chargePerBid" : "3.00 EUR",
+  "commission" : 0.23,
+  "currency" : "GBP",
+  "description" : "a product",
+  "id" : 123,
+  "reserve" : "100.00 EUR",
+  "rules" : "Reverse",
+  "seller" : "the-seller"
+}

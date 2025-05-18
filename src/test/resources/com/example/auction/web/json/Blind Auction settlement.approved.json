@@ -1,0 +1,15 @@
+{
+  "charges" : [ {
+    "fee" : "commission",
+    "from" : "simon",
+    "quantity" : 1,
+    "total" : "10.00 EUR",
+    "unit" : "10.00 EUR"
+  } ],
+  "collect" : {
+    "amount" : "100.00 EUR",
+    "from" : "wendy",
+    "to" : "simon"
+  },
+  "order" : "auction:12345"
+}
