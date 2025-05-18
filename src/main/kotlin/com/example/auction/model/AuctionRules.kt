@@ -5,13 +5,22 @@ enum class AuctionRules {
         override fun decideWinner(auction: Auction): AuctionWinner? {
             TODO("Not yet implemented")
         }
-    }, Vickrey {
+    },
+    Vickrey {
         override fun decideWinner(auction: Auction): AuctionWinner? {
             return vickreyActionWinner(auction)
         }
-    }, Reverse {
+    },
+    Reverse {
         override fun decideWinner(auction: Auction): AuctionWinner? {
-            TODO("Not yet implemented")
+            val lowestValidUniqueBid = auction.bids
+                .filter { it.amount >= auction.reserve }
+                .groupBy { it.amount }
+                .values
+                .filter { it.size == 1 }
+                .map { it.single() }
+                .minByOrNull { it.amount }
+            return lowestValidUniqueBid?.toWinner()
         }
     };
 

@@ -19,14 +19,5 @@ class ReverseAuction(
 ) : Auction() {
     override val rules = Reverse
 
-    override fun decideWinner(): AuctionWinner? {
-        val lowestValidUniqueBid = bids
-            .filter { it.amount >= reserve }
-            .groupBy { it.amount }
-            .values
-            .filter { it.size == 1 }
-            .map { it.single() }
-            .minByOrNull { it.amount }
-        return lowestValidUniqueBid?.toWinner()
-    }
+    override fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 }
