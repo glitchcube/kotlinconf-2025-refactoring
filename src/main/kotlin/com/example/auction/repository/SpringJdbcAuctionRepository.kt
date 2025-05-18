@@ -105,7 +105,7 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
             } else
                 bid
         }
-        auction.bids = updatedBids.toMutableList()
+        auction.bids = updatedBids
     }
     
     private fun insertBid(auction: Auction, bid: Bid): Bid {
