@@ -15,30 +15,18 @@ class ReverseAuction(
     override var id: AuctionId = AuctionId.NONE,
     override var bids: MutableList<Bid> = mutableListOf(),
     override var state: AuctionState = open,
-    override var winner: AuctionWinner? = null
+    override var winner: AuctionWinner? = null,
 ) : Auction() {
     override val rules = Reverse
-    
+
     override fun decideWinner(): AuctionWinner? {
-        val bidsByAmount = mutableMapOf<MonetaryAmount, MutableList<Bid>>()
-        for (bid in bids) if (bid.amount >= reserve) {
-            var bidGroup = bidsByAmount[bid.amount]
-            if (bidGroup == null) {
-                bidGroup = mutableListOf()
-                bidsByAmount[bid.amount] = bidGroup
-            }
-            bidGroup.add(bid)
-        }
-        
-        var lowestUniqueBid: Bid? = null
-        
-        for (bids in bidsByAmount.values) if (bids.size == 1) {
-            val bid = bids.single()
-            if (lowestUniqueBid == null || bid.amount < lowestUniqueBid.amount) {
-                lowestUniqueBid = bid
-            }
-        }
-        
-        return lowestUniqueBid?.toWinner()
+        val lowestValidUniqueBid = bids
+            .filter { it.amount >= reserve }
+            .groupBy { it.amount }
+            .values
+            .filter { it.size == 1 }
+            .map { it.single() }
+            .minByOrNull { it.amount }
+        return lowestValidUniqueBid?.toWinner()
     }
 }
