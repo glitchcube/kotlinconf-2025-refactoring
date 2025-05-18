@@ -24,13 +24,14 @@ class InMemoryAuctionRepository : AuctionRepository {
     override fun getAuction(id: AuctionId) =
         auctions[id]
     
-    override fun updateAuction(auction: Auction) {
-        auction.bids = auction.bids.map {
+    override fun updateAuction(auction: Auction): Auction {
+        val updated = auction.copy(bids = auction.bids.map {
             if (it.id == BidId.NONE) {
                 it.copy(id = BidId(nextBidId++))
             } else it
-        }
-        auctions[auction.id] = auction
+        })
+        auctions[updated.id] = updated
+        return updated
     }
     
     override fun listOpenAuctions(count: Int, after: AuctionId) =

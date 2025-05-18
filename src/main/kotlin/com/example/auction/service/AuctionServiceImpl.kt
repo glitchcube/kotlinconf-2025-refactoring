@@ -128,13 +128,13 @@ class AuctionServiceImpl(
         val auction = loadAuction(auctionId)
         
         auction.close()
-        repository.updateAuction(auction)
+        val updated = repository.updateAuction(auction)
         
-        return when (val result = auction.winner) {
+        return when (val result = updated.winner) {
             null -> Passed
             else -> Sold(
                 result.winner,
-                Money(result.owed, auction.currency).toWholeMinorUnits(UP)
+                Money(result.owed, updated.currency).toWholeMinorUnits(UP)
             )
         }
     }

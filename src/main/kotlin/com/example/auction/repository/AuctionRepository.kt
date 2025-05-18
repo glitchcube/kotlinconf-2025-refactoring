@@ -7,7 +7,7 @@ interface AuctionRepository {
     fun getAuction(id: AuctionId): Auction?
 
     fun addAuction(auction: Auction): Auction
-    fun updateAuction(auction: Auction)
+    fun updateAuction(auction: Auction): Auction
 
     fun listOpenAuctions(count: Int, after: AuctionId = AuctionId.NONE): List<Auction>
     fun listForSettlement(count: Int, after: AuctionId = AuctionId.NONE): List<AuctionId>

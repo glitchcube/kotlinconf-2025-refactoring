@@ -46,7 +46,7 @@ interface AuctionRepositoryContract {
         val auction = repository.addAuction(newBlindAuction())
             .placeBid(alice, 1.EUR)
             .placeBid(bob, 2.EUR)
-        repository.updateAuction(auction)
+            .let { repository.updateAuction(it) }
 
         assertNotEquals(BidId.NONE, auction.bids[0].id, "bids[0]")
         assertNotEquals(BidId.NONE, auction.bids[1].id, "bids[1]")
@@ -68,7 +68,7 @@ interface AuctionRepositoryContract {
         val auction = repository.addAuction(newBlindAuction())
             .placeBid(alice, 1.EUR)
             .placeBid(bob, 2.EUR)
-        repository.updateAuction(auction)
+            .let { repository.updateAuction(it) }
 
         val auctionId = auction.id
         run {

@@ -22,7 +22,7 @@ data class Auction(
     val chargePerBid: MonetaryAmount,
     val id: AuctionId,
     var state: AuctionState,
-    var bids: List<Bid>,
+    val bids: List<Bid>,
     var winner: AuctionWinner?,
 ) {
     fun placeBid(buyer: UserId, bid: Money): Auction {
