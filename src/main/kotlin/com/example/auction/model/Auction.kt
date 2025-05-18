@@ -21,7 +21,7 @@ data class Auction(
     val commission: MonetaryAmount,
     val chargePerBid: MonetaryAmount,
     val id: AuctionId,
-    var state: AuctionState,
+    val state: AuctionState,
     val bids: List<Bid>,
     val winner: AuctionWinner?,
 ) {
@@ -46,12 +46,11 @@ data class Auction(
 
     protected fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 
-    fun settled() {
+    fun settled(): Auction {
         if (state == open) {
             throw WrongStateException("auction $id not closed")
         }
-
-        state = AuctionState.settled
+        return copy(state = AuctionState.settled)
     }
 
     fun settlement(): SettlementInstruction? {
