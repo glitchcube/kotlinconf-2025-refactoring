@@ -19,11 +19,5 @@ class BlindAuction(
 ) : Auction() {
     override val rules = Blind
     
-    override fun decideWinner(): AuctionWinner? {
-        return bids
-            .associateBy { it.buyer }
-            .values
-            .maxByOrNull { it.amount }
-            ?.takeIf { it.amount >= reserve }?.toWinner()
-    }
+    override fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 }
