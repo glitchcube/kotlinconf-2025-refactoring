@@ -12,20 +12,19 @@ import java.math.RoundingMode.DOWN
 import java.math.RoundingMode.UP
 import java.util.Currency
 
-abstract class Auction {
-    abstract val rules: AuctionRules
-    
-    abstract val seller: UserId
-    abstract val description: String
-    abstract val currency: Currency
-    abstract val reserve: MonetaryAmount
-    abstract val commission: MonetaryAmount
-    abstract val chargePerBid: MonetaryAmount
-    abstract var id: AuctionId
-    abstract var state: AuctionState
-    abstract var bids: MutableList<Bid>
-    abstract var winner: AuctionWinner?
-    
+open class Auction(
+    val rules: AuctionRules,
+    val seller: UserId,
+    val description: String,
+    val currency: Currency,
+    val reserve: MonetaryAmount,
+    val commission: MonetaryAmount,
+    val chargePerBid: MonetaryAmount,
+    var id: AuctionId,
+    var state: AuctionState,
+    var bids: MutableList<Bid>,
+    var winner: AuctionWinner?,
+) {
     fun placeBid(buyer: UserId, bid: Money) {
         if (buyer == seller) {
             throw BadRequestException("shill bidding detected by $seller")
