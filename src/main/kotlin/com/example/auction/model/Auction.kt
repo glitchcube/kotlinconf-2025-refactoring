@@ -23,7 +23,7 @@ data class Auction(
     val id: AuctionId,
     var state: AuctionState,
     val bids: List<Bid>,
-    var winner: AuctionWinner?,
+    val winner: AuctionWinner?,
 ) {
     fun placeBid(buyer: UserId, bid: Money): Auction {
         if (buyer == seller) {
@@ -42,10 +42,7 @@ data class Auction(
         return this.copy(bids = bids + Bid(buyer, bid.amount))
     }
 
-    fun close() {
-        state = closed
-        winner = decideWinner()
-    }
+    fun close(): Auction = copy(state = closed, winner = decideWinner())
 
     protected fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 

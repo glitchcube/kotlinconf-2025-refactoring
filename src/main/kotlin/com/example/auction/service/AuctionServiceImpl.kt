@@ -126,8 +126,7 @@ class AuctionServiceImpl(
     @ApiTransaction
     override fun closeAuction(auctionId: AuctionId): AuctionResult {
         val auction = loadAuction(auctionId)
-        
-        auction.close()
+            .close()
         val updated = repository.updateAuction(auction)
         
         return when (val result = updated.winner) {
