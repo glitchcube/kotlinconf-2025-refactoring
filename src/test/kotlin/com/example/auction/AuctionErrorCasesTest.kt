@@ -1,7 +1,7 @@
 package com.example.auction
 
 import com.example.auction.model.AuctionId
-import com.example.auction.model.BlindAuction
+import com.example.auction.model.blindAuction
 import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.WrongStateException
 import com.example.pii.UserId
@@ -11,7 +11,7 @@ import kotlin.test.assertFailsWith
 class AuctionErrorCasesTest {
     @Test
     fun `cannot mark an open auction as settled`() {
-        val a = BlindAuction(
+        val a = blindAuction(
             id = AuctionId(2),
             seller = UserId.newId(),
             description = "the-auction",

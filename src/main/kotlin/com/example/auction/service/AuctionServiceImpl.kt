@@ -3,12 +3,12 @@ package com.example.auction.service
 import com.example.auction.model.Auction
 import com.example.auction.model.AuctionId
 import com.example.auction.model.BadRequestException
-import com.example.auction.model.BlindAuction
+import com.example.auction.model.blindAuction
 import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.MonetaryAmount.Companion.ZERO
 import com.example.auction.model.Money
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
+import com.example.auction.model.reverseAuction
+import com.example.auction.model.vickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
 import org.springframework.dao.ConcurrencyFailureException
@@ -72,7 +72,7 @@ class AuctionServiceImpl(
         checkWholeMinorUnits(rq.reserve.amount, rq.reserve.currency, "reserve")
         checkPositiveAmount(rq.commission, "commission")
         
-        return BlindAuction(
+        return blindAuction(
             seller = rq.seller,
             description = rq.description,
             currency = rq.reserve.currency,
@@ -86,7 +86,7 @@ class AuctionServiceImpl(
         checkWholeMinorUnits(rq.reserve.amount, rq.reserve.currency, "reserve")
         checkPositiveAmount(rq.commission, "commission")
         
-        return VickreyAuction(
+        return vickreyAuction(
             seller = rq.seller,
             description = rq.description,
             currency = rq.reserve.currency,
@@ -103,7 +103,7 @@ class AuctionServiceImpl(
             throw BadRequestException("reserve and charge-per-bid must have same currency")
         }
         
-        return ReverseAuction(
+        return reverseAuction(
             seller = rq.seller,
             description = rq.description,
             currency = rq.reserve.currency,

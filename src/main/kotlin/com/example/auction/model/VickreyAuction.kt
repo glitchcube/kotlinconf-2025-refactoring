@@ -1,12 +1,11 @@
 package com.example.auction.model
 
-import com.example.auction.model.AuctionRules.Blind
 import com.example.auction.model.AuctionRules.Vickrey
 import com.example.auction.model.AuctionState.open
 import com.example.pii.UserId
 import java.util.Currency
 
-class VickreyAuction(
+fun vickreyAuction(
     seller: UserId,
     description: String,
     currency: Currency,
@@ -17,7 +16,7 @@ class VickreyAuction(
     bids: MutableList<Bid> = mutableListOf(),
     state: AuctionState = open,
     winner: AuctionWinner? = null,
-) : Auction(
+) = Auction(
     seller = seller,
     description = description,
     currency = currency,

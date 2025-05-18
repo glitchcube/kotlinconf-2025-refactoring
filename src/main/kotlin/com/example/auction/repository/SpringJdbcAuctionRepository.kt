@@ -10,10 +10,10 @@ import com.example.auction.model.AuctionState.valueOf
 import com.example.auction.model.AuctionWinner
 import com.example.auction.model.Bid
 import com.example.auction.model.BidId
-import com.example.auction.model.BlindAuction
+import com.example.auction.model.blindAuction
 import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
+import com.example.auction.model.reverseAuction
+import com.example.auction.model.vickreyAuction
 import com.example.pii.UserId
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.jdbc.support.GeneratedKeyHolder
@@ -228,9 +228,9 @@ private fun ResultSet.toAuction(bids: MutableList<Bid>): Auction {
     } else null
     
     val constructor = when (rules) {
-        Blind -> ::BlindAuction
-        Vickrey -> ::VickreyAuction
-        Reverse -> ::ReverseAuction
+        Blind -> ::blindAuction
+        Vickrey -> ::vickreyAuction
+        Reverse -> ::reverseAuction
     }
     
     return constructor(

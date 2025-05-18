@@ -7,10 +7,10 @@ import com.example.auction.model.AuctionId
 import com.example.auction.model.AuctionWinner
 import com.example.auction.model.Bid
 import com.example.auction.model.BidId
-import com.example.auction.model.BlindAuction
+import com.example.auction.model.blindAuction
 import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
+import com.example.auction.model.reverseAuction
+import com.example.auction.model.vickreyAuction
 import com.example.pii.UserId
 import kotlin.test.assertNotEquals
 import kotlin.test.Test
@@ -142,21 +142,21 @@ interface AuctionRepositoryContract {
             ?: fail("no bid found for $bidder")
     
     companion object {
-        fun newBlindAuction(n: Int = 1) = BlindAuction(
+        fun newBlindAuction(n: Int = 1) = blindAuction(
             seller = UserId.newId(),
             description = "description-$n",
             currency = EUR,
             reserve = MonetaryAmount(1),
         )
         
-        fun newVickreyAuction(n: Int = 1) = VickreyAuction(
+        fun newVickreyAuction(n: Int = 1) = vickreyAuction(
             seller = UserId.newId(),
             description = "description-$n",
             currency = EUR,
             reserve = MonetaryAmount(1),
         )
         
-        fun newReverseAuction(n: Int = 1) = ReverseAuction(
+        fun newReverseAuction(n: Int = 1) = reverseAuction(
             seller = UserId.newId(),
             description = "description-$n",
             currency = EUR,
