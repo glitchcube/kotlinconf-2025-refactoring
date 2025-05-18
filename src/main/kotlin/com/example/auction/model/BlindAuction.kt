@@ -18,6 +18,4 @@ class BlindAuction(
     override var winner: AuctionWinner? = null
 ) : Auction() {
     override val rules = Blind
-    
-    override fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 }

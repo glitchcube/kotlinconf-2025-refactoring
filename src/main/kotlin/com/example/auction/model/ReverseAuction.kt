@@ -18,6 +18,4 @@ class ReverseAuction(
     override var winner: AuctionWinner? = null,
 ) : Auction() {
     override val rules = Reverse
-
-    override fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 }

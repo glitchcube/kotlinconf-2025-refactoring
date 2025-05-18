@@ -47,8 +47,8 @@ abstract class Auction {
         state = closed
         winner = decideWinner()
     }
-    
-    protected abstract fun decideWinner(): AuctionWinner?
+
+    protected fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
     
     fun settled() {
         if (state == open) {

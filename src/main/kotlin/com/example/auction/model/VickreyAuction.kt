@@ -18,6 +18,4 @@ class VickreyAuction(
     override var winner: AuctionWinner? = null,
 ) : Auction() {
     override val rules = Vickrey
-    override fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
-
 }
