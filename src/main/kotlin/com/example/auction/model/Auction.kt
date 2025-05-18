@@ -25,7 +25,7 @@ data class Auction(
     var bids: List<Bid>,
     var winner: AuctionWinner?,
 ) {
-    fun placeBid(buyer: UserId, bid: Money) {
+    fun placeBid(buyer: UserId, bid: Money): Auction {
         if (buyer == seller) {
             throw BadRequestException("shill bidding detected by $seller")
         }
@@ -38,28 +38,29 @@ data class Auction(
         if (state != open) {
             throw WrongStateException("auction $id is closed")
         }
-        
+
         bids = bids + Bid(buyer, bid.amount)
+        return this
     }
-    
+
     fun close() {
         state = closed
         winner = decideWinner()
     }
 
     protected fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
-    
+
     fun settled() {
         if (state == open) {
             throw WrongStateException("auction $id not closed")
         }
-        
+
         state = AuctionState.settled
     }
-    
+
     fun settlement(): SettlementInstruction? {
         val winner = this.winner ?: return null
-        
+
         val commissionCharges = when {
             commission == ZERO -> emptyList()
             else -> listOf(
@@ -70,7 +71,7 @@ data class Auction(
                 )
             )
         }
-        
+
         val bidCharges = when {
             chargePerBid == ZERO -> emptyList()
             else -> bids
@@ -87,7 +88,7 @@ data class Auction(
                 }
                 .sortedBy { it.from.value }
         }
-        
+
         return SettlementInstruction(
             order = OrderId(id),
             collect = Collection(
@@ -98,7 +99,7 @@ data class Auction(
             charges = commissionCharges + bidCharges
         )
     }
-    
+
     override fun toString(): String {
         return "${this::class.simpleName}(seller=$seller, description='$description', currency=$currency, reserve=$reserve, commission=$commission, chargePerBid=$chargePerBid, id=$id, state=$state, rules=$rules, winner=$winner)"
     }

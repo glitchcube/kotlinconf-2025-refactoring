@@ -119,8 +119,7 @@ class AuctionServiceImpl(
         }
         
         val auction = loadAuction(auctionId)
-        auction.placeBid(bid.buyer, bid.amount)
-        
+            .placeBid(bid.buyer, bid.amount)
         repository.updateAuction(auction)
     }
     
