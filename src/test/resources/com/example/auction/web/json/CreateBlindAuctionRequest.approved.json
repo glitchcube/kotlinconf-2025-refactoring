@@ -1,0 +1,7 @@
+{
+  "commission" : 0.21,
+  "description" : "a product",
+  "reserve" : "456.78 EUR",
+  "rules" : "Blind",
+  "seller" : "the-user"
+}

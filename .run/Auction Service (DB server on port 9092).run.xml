@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Auction Service (DB server on port 9092)" type="JetRunConfigurationType">
+    <envs>
+      <env name="PII_VAULT_URL" value="http://localhost:9091" />
+      <env name="SERVER_POR~T" value="9090" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.example.auction.AuctionApplicationKt" />
+    <module name="auction.main" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
