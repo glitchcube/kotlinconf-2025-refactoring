@@ -39,8 +39,7 @@ data class Auction(
             throw WrongStateException("auction $id is closed")
         }
 
-        bids = bids + Bid(buyer, bid.amount)
-        return this.copy()
+        return this.copy(bids = bids + Bid(buyer, bid.amount))
     }
 
     fun close() {
