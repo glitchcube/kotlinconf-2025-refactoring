@@ -29,10 +29,8 @@ class InMemoryAuctionRepository : AuctionRepository {
             if (it.id == BidId.NONE) {
                 it.copy(id = BidId(nextBidId++))
             } else it
-        }.toMutableList()
-        
-        // TODO: ask Nat if I can delete this line. It doesn't seem needed because we mutate the auction
-        // auctions[auction.id] = auction
+        }
+        auctions[auction.id] = auction
     }
     
     override fun listOpenAuctions(count: Int, after: AuctionId) =

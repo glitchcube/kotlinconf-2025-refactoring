@@ -40,7 +40,7 @@ data class Auction(
         }
 
         bids = bids + Bid(buyer, bid.amount)
-        return this
+        return this.copy()
     }
 
     fun close() {
