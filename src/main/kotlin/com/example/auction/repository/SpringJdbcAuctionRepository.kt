@@ -37,7 +37,7 @@ private const val selectAuction = """
 class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
     private val jdbcClient = JdbcClient.create(dataSource)
     
-    override fun addAuction(auction: Auction) {
+    override fun addAuction(auction: Auction): Auction {
         val keyHolder = GeneratedKeyHolder()
         
         jdbcClient
@@ -60,9 +60,9 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
             .update(keyHolder)
         
         val newId = AuctionId(keyHolder.key?.toLong() ?: error("no ID generated"))
-        auction.id = newId
-        
-        insertNewBids(auction)
+        val saved = auction.copy(id = newId)
+        insertNewBids(saved)
+        return saved
     }
     
     override fun updateAuction(auction: Auction) {

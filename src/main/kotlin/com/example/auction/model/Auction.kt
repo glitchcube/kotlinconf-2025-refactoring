@@ -12,7 +12,7 @@ import java.math.RoundingMode.DOWN
 import java.math.RoundingMode.UP
 import java.util.Currency
 
-class Auction(
+data class Auction(
     val rules: AuctionRules,
     val seller: UserId,
     val description: String,
@@ -20,7 +20,7 @@ class Auction(
     val reserve: MonetaryAmount,
     val commission: MonetaryAmount,
     val chargePerBid: MonetaryAmount,
-    var id: AuctionId,
+    val id: AuctionId,
     var state: AuctionState,
     var bids: MutableList<Bid>,
     var winner: AuctionWinner?,

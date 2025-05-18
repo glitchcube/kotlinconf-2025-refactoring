@@ -57,8 +57,7 @@ class AuctionServiceImpl(
         }
         
         val auction = newAuction(rq)
-        repository.addAuction(auction)
-        return auction.id
+        return repository.addAuction(auction).id
     }
     
     private fun newAuction(rq: CreateAuctionRequest) = when (rq) {

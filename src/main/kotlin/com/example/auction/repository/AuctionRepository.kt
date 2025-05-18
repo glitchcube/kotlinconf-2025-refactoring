@@ -6,7 +6,7 @@ import com.example.auction.model.AuctionId
 interface AuctionRepository {
     fun getAuction(id: AuctionId): Auction?
 
-    fun addAuction(auction: Auction)
+    fun addAuction(auction: Auction): Auction
     fun updateAuction(auction: Auction)
 
     fun listOpenAuctions(count: Int, after: AuctionId = AuctionId.NONE): List<Auction>
