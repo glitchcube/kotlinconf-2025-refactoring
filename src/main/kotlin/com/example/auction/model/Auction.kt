@@ -52,11 +52,11 @@ data class Auction(
 
     protected fun decideWinner(): AuctionWinner? = rules.decideWinner(this)
 
-    fun settled(): Auction {
+    fun settled(): Result4k<Auction, WrongStateException> {
         if (state == open) {
-            throw WrongStateException("auction $id not closed")
+            return Failure(WrongStateException("auction $id not closed"))
         }
-        return copy(state = AuctionState.settled)
+        return Success(copy(state = AuctionState.settled))
     }
 
     fun settlement(): SettlementInstruction? {

@@ -5,6 +5,7 @@ import com.example.auction.model.blindAuction
 import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.WrongStateException
 import com.example.pii.UserId
+import dev.forkhandles.result4k.orThrow
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
@@ -20,7 +21,7 @@ class AuctionErrorCasesTest {
         )
         
         assertFailsWith<WrongStateException> {
-            a.settled()
+            a.settled().orThrow()
         }
     }
 }
