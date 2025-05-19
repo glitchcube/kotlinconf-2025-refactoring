@@ -12,6 +12,7 @@ import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.reverseAuction
 import com.example.auction.model.vickreyAuction
 import com.example.pii.UserId
+import dev.forkhandles.result4k.orThrow
 import kotlin.test.assertNotEquals
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,8 +45,8 @@ interface AuctionRepositoryContract {
     @Test
     fun `adding bids`() {
         val auction = repository.addAuction(newBlindAuction())
-            .placeBid(alice, 1.EUR)
-            .placeBid(bob, 2.EUR)
+            .placeBid(alice, 1.EUR).orThrow()
+            .placeBid(bob, 2.EUR).orThrow()
             .let { repository.updateAuction(it) }
 
         assertNotEquals(BidId.NONE, auction.bids[0].id, "bids[0]")
@@ -66,8 +67,8 @@ interface AuctionRepositoryContract {
     @Test
     fun `saving and loading the winner`() {
         val auction = repository.addAuction(newBlindAuction())
-            .placeBid(alice, 1.EUR)
-            .placeBid(bob, 2.EUR)
+            .placeBid(alice, 1.EUR).orThrow()
+            .placeBid(bob, 2.EUR).orThrow()
             .let { repository.updateAuction(it) }
 
         val auctionId = auction.id
