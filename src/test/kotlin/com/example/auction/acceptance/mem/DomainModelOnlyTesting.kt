@@ -15,6 +15,7 @@ import com.example.settlement.SettlementInstruction
 import com.example.simulators.pii_vault.PiiVaultSimulatorService
 import com.example.simulators.settlement.SettlementSimulatorService
 import com.example.simulators.settlement.get
+import dev.forkhandles.result4k.mapFailure
 import dev.forkhandles.result4k.orThrow
 
 
@@ -45,7 +46,7 @@ abstract class DomainModelOnlyTesting : AuctionTesting {
         service.createAuction(rq)
     
     override fun UserId.bid(auction: AuctionId, amount: Money) {
-        service.placeBid(auction, BidRequest(this, amount)).orThrow()
+        service.placeBid(auction, BidRequest(this, amount)).mapFailure { it.toException() }.orThrow()
     }
     
     override fun UserId.closeAuction(auction: AuctionId) =

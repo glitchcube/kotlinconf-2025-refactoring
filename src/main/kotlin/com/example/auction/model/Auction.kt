@@ -21,11 +21,13 @@ sealed class AuctionError() {
 
 fun Result<Auction, AuctionError>.asExceptionFailure(): Result<Auction, RuntimeException> =
     mapFailure {
-        when (it) {
-            is AuctionError.BadRequest -> BadRequestException(it.message)
-            is AuctionError.WrongState -> WrongStateException(it.message)
-        }
+        it.toException()
     }
+
+fun AuctionError.toException(): RuntimeException = when (this) {
+    is AuctionError.BadRequest -> BadRequestException(message)
+    is AuctionError.WrongState -> WrongStateException(message)
+}
 
 data class Auction(
     val rules: AuctionRules,

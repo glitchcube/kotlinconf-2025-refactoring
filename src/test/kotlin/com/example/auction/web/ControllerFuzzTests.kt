@@ -3,12 +3,7 @@ package com.example.auction.web
 import com.example.auction.AuctionApplication
 import com.example.auction.acceptance.EUR
 import com.example.auction.model.AuctionId
-import com.example.auction.service.AuctionResult
-import com.example.auction.service.AuctionService
-import com.example.auction.service.AuctionSummary
-import com.example.auction.service.BidRequest
-import com.example.auction.service.CreateAuctionRequest
-import com.example.auction.service.Sold
+import com.example.auction.service.*
 import com.example.auction.web.ControllerFuzzTests.Config
 import com.example.pii.UserId
 import com.natpryce.snodge.json.defaultJsonMutagens
@@ -98,7 +93,7 @@ class DummyAuctionService : AuctionService {
         return AuctionId(1)
     }
     
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, Exception> {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, AuctionServiceError> {
         return Success(Unit)
     }
     

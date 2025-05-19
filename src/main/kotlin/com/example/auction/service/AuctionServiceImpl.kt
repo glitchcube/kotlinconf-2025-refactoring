@@ -3,10 +3,9 @@ package com.example.auction.service
 import com.example.auction.model.*
 import com.example.auction.model.MonetaryAmount.Companion.ZERO
 import com.example.auction.repository.AuctionRepository
+import com.example.auction.service.AuctionServiceError.*
 import com.example.pii.UserIdValidator
-import dev.forkhandles.result4k.Failure
-import dev.forkhandles.result4k.Result4k
-import dev.forkhandles.result4k.map
+import dev.forkhandles.result4k.*
 import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
@@ -109,15 +108,18 @@ class AuctionServiceImpl(
     }
 
     @ApiTransaction
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, Exception> {
+    override fun placeBid(
+        auctionId: AuctionId,
+        bid: BidRequest,
+    ): Result4k<Unit, AuctionServiceError> {
         if (!piiVault.isValid(bid.buyer)) {
-            return Failure(BadRequestException("invalid user id ${bid.buyer}"))
+            return InvalidUser("invalid user id ${bid.buyer}").asFailure()
         }
         val auction = loadAuction(auctionId) ?:
-            return Failure(NotFoundException("no auction found with id $auctionId"))
+            return InvalidAuction("no auction found with id $auctionId").asFailure()
         return auction.placeBid(bid.buyer, bid.amount)
-            .asExceptionFailure()
-            .map { repository.updateAuction(it) }
+            .map { repository.updateAuction(it); Unit}
+            .mapFailure { AuctionServiceError.AuctionError(it) }
     }
 
     @ApiTransaction
