@@ -14,6 +14,8 @@ import com.example.pii.UserId
 import com.natpryce.snodge.json.defaultJsonMutagens
 import com.natpryce.snodge.json.forStrings
 import com.natpryce.snodge.mutants
+import dev.forkhandles.result4k.Result4k
+import dev.forkhandles.result4k.Success
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -96,7 +98,8 @@ class DummyAuctionService : AuctionService {
         return AuctionId(1)
     }
     
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest) {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, Exception> {
+        return Success(Unit)
     }
     
     override fun closeAuction(auctionId: AuctionId): AuctionResult {

@@ -11,6 +11,8 @@ import com.example.auction.model.reverseAuction
 import com.example.auction.model.vickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
+import dev.forkhandles.result4k.Result4k
+import dev.forkhandles.result4k.map
 import dev.forkhandles.result4k.orThrow
 import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.retry.annotation.Backoff
@@ -42,7 +44,7 @@ annotation class ApiTransaction
 @Component
 class AuctionServiceImpl(
     private val repository: AuctionRepository,
-    private val piiVault: UserIdValidator
+    private val piiVault: UserIdValidator,
 ) : AuctionService {
     @ApiTransaction
     override fun listAuctions(count: Int, after: AuctionId): List<AuctionSummary> {
@@ -50,28 +52,28 @@ class AuctionServiceImpl(
         return repository.listOpenAuctions(count, after)
             .map { it.summarise() }
     }
-    
+
     @ApiTransaction
     override fun createAuction(rq: CreateAuctionRequest): AuctionId {
         if (!piiVault.isValid(rq.seller)) {
             throw BadRequestException("invalid user id ${rq.seller}")
         }
-        
+
         val auction = newAuction(rq)
         return repository.addAuction(auction).id
     }
-    
+
     private fun newAuction(rq: CreateAuctionRequest) = when (rq) {
         is CreateBlindAuctionRequest -> newAuction(rq)
         is CreateVickreyAuctionRequest -> newAuction(rq)
         is CreateReverseAuctionRequest -> newAuction(rq)
     }
-    
+
     private fun newAuction(rq: CreateBlindAuctionRequest): Auction {
         checkPositiveAmount(rq.reserve.amount, "reserve")
         checkWholeMinorUnits(rq.reserve.amount, rq.reserve.currency, "reserve")
         checkPositiveAmount(rq.commission, "commission")
-        
+
         return blindAuction(
             seller = rq.seller,
             description = rq.description,
@@ -80,12 +82,12 @@ class AuctionServiceImpl(
             commission = rq.commission,
         )
     }
-    
+
     private fun newAuction(rq: CreateVickreyAuctionRequest): Auction {
         checkPositiveAmount(rq.reserve.amount, "reserve")
         checkWholeMinorUnits(rq.reserve.amount, rq.reserve.currency, "reserve")
         checkPositiveAmount(rq.commission, "commission")
-        
+
         return vickreyAuction(
             seller = rq.seller,
             description = rq.description,
@@ -94,15 +96,15 @@ class AuctionServiceImpl(
             commission = rq.commission,
         )
     }
-    
+
     private fun newAuction(rq: CreateReverseAuctionRequest): Auction {
         checkWholeMinorUnits(rq.reserve.amount, rq.reserve.currency, "reserve")
         checkPositiveAmount(rq.chargePerBid.amount, "charge per bid")
-        
+
         if (rq.reserve.currency != rq.chargePerBid.currency) {
             throw BadRequestException("reserve and charge-per-bid must have same currency")
         }
-        
+
         return reverseAuction(
             seller = rq.seller,
             description = rq.description,
@@ -112,24 +114,25 @@ class AuctionServiceImpl(
             chargePerBid = rq.chargePerBid.amount,
         )
     }
-    
+
     @ApiTransaction
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest) {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, Exception> {
         if (!piiVault.isValid(bid.buyer)) {
             throw BadRequestException("invalid user id ${bid.buyer}")
         }
 
-        val auction = loadAuction(auctionId)
-            .placeBid(bid.buyer, bid.amount).orThrow()
-        repository.updateAuction(auction)
+        return loadAuction(auctionId)
+            .placeBid(bid.buyer, bid.amount).map {
+                repository.updateAuction(it)
+            }
     }
-    
+
     @ApiTransaction
     override fun closeAuction(auctionId: AuctionId): AuctionResult {
         val auction = loadAuction(auctionId)
             .close()
         val updated = repository.updateAuction(auction)
-        
+
         return when (val result = updated.winner) {
             null -> Passed
             else -> Sold(
@@ -138,7 +141,7 @@ class AuctionServiceImpl(
             )
         }
     }
-    
+
     private fun loadAuction(auctionId: AuctionId): Auction {
         return repository.getAuction(auctionId)
             ?: throw NotFoundException("no auction found with id $auctionId")

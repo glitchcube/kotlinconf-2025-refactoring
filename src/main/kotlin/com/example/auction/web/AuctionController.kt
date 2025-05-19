@@ -7,6 +7,7 @@ import com.example.auction.service.AuctionSummary
 import com.example.auction.service.BidRequest
 import com.example.auction.service.CreateAuctionRequest
 import com.example.auction.service.CreateAuctionResponse
+import dev.forkhandles.result4k.orThrow
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
@@ -56,7 +57,7 @@ class AuctionController(
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun recordBid(@PathVariable auctionId: AuctionId, @RequestBody bid: BidRequest) {
-        auctionService.placeBid(auctionId, bid)
+        auctionService.placeBid(auctionId, bid).orThrow()
     }
     
     @PostMapping(
