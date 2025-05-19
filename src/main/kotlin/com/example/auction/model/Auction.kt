@@ -8,12 +8,24 @@ import com.example.settlement.Charge
 import com.example.settlement.Collection
 import com.example.settlement.OrderId
 import com.example.settlement.SettlementInstruction
-import dev.forkhandles.result4k.Failure
-import dev.forkhandles.result4k.Result4k
-import dev.forkhandles.result4k.Success
+import dev.forkhandles.result4k.*
 import java.math.RoundingMode.DOWN
 import java.math.RoundingMode.UP
 import java.util.Currency
+
+sealed class AuctionError() {
+    abstract val message: String
+    data class BadRequest(override val message: String) : AuctionError()
+    data class WrongState(override val message: String) : AuctionError()
+}
+
+fun Result<Auction, AuctionError>.asExceptionFailure(): Result<Auction, RuntimeException> =
+    mapFailure {
+        when (it) {
+            is AuctionError.BadRequest -> BadRequestException(it.message)
+            is AuctionError.WrongState -> WrongStateException(it.message)
+        }
+    }
 
 data class Auction(
     val rules: AuctionRules,
@@ -28,21 +40,22 @@ data class Auction(
     val bids: List<Bid>,
     val winner: AuctionWinner?,
 ) {
+
     fun placeBid(
         buyer: UserId,
         bid: Money,
-    ): Result4k<Auction, Exception> {
+    ): Result<Auction, AuctionError> {
         if (buyer == seller) {
-            return Failure(BadRequestException("shill bidding detected by $seller"))
+            return Failure(AuctionError.BadRequest("shill bidding detected by $seller"))
         }
         if (bid.currency != currency) {
-            return Failure(BadRequestException("bid in wrong currency, should be $currency"))
+            return Failure(AuctionError.BadRequest("bid in wrong currency, should be $currency"))
         }
         if (bid.amount == ZERO) {
-            return Failure(BadRequestException("zero bid"))
+            return Failure(AuctionError.BadRequest("zero bid"))
         }
         if (state != open) {
-            return Failure(WrongStateException("auction $id is closed"))
+            return Failure(AuctionError.WrongState("auction $id is closed"))
         }
 
         return Success(this.copy(bids = bids + Bid(buyer, bid.amount)))

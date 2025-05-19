@@ -1,14 +1,7 @@
 package com.example.auction.service
 
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.BadRequestException
-import com.example.auction.model.blindAuction
-import com.example.auction.model.MonetaryAmount
+import com.example.auction.model.*
 import com.example.auction.model.MonetaryAmount.Companion.ZERO
-import com.example.auction.model.Money
-import com.example.auction.model.reverseAuction
-import com.example.auction.model.vickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
 import dev.forkhandles.result4k.Failure
@@ -122,10 +115,9 @@ class AuctionServiceImpl(
         }
         val auction = loadAuction(auctionId) ?:
             return Failure(NotFoundException("no auction found with id $auctionId"))
-        return auction
-            .placeBid(bid.buyer, bid.amount).map {
-                repository.updateAuction(it)
-            }
+        return auction.placeBid(bid.buyer, bid.amount)
+            .asExceptionFailure()
+            .map { repository.updateAuction(it) }
     }
 
     @ApiTransaction

@@ -2,18 +2,11 @@ package com.example.auction.repository
 
 import com.example.auction.EUR
 import com.example.auction.acceptance.EUR
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.AuctionWinner
-import com.example.auction.model.Bid
-import com.example.auction.model.BidId
-import com.example.auction.model.blindAuction
-import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.reverseAuction
-import com.example.auction.model.vickreyAuction
+import com.example.auction.model.*
 import com.example.pii.UserId
 import dev.forkhandles.result4k.flatMap
 import dev.forkhandles.result4k.map
+import dev.forkhandles.result4k.onFailure
 import dev.forkhandles.result4k.orThrow
 import kotlin.test.assertNotEquals
 import kotlin.test.Test
@@ -46,10 +39,12 @@ interface AuctionRepositoryContract {
 
     @Test
     fun `adding bids`() {
-        val auction = repository.addAuction(newBlindAuction())
-            .placeBid(alice, 1.EUR).flatMap { it.placeBid(bob, 2.EUR) }
-            .map { repository.updateAuction(it) }
-            .orThrow()
+        val auction =
+            repository.addAuction(newBlindAuction())
+                .placeBid(alice, 1.EUR)
+                .flatMap { it.placeBid(bob, 2.EUR) }
+                .map { repository.updateAuction(it) }
+                .onFailure { fail(it.reason.message) }
 
         assertNotEquals(BidId.NONE, auction.bids[0].id, "bids[0]")
         assertNotEquals(BidId.NONE, auction.bids[1].id, "bids[1]")
@@ -68,10 +63,12 @@ interface AuctionRepositoryContract {
 
     @Test
     fun `saving and loading the winner`() {
-        val auction = repository.addAuction(newBlindAuction())
-            .placeBid(alice, 1.EUR).flatMap { it.placeBid(bob, 2.EUR) }
-            .map { repository.updateAuction(it) }
-            .orThrow()
+        val auction =
+            repository.addAuction(newBlindAuction())
+                .placeBid(alice, 1.EUR)
+                .flatMap { it.placeBid(bob, 2.EUR) }
+                .map { repository.updateAuction(it) }
+                .onFailure { fail(it.reason.message) }
 
         val auctionId = auction.id
         run {
