@@ -11,9 +11,9 @@ import com.example.auction.model.reverseAuction
 import com.example.auction.model.vickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
+import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.map
-import dev.forkhandles.result4k.orThrow
 import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
@@ -118,10 +118,11 @@ class AuctionServiceImpl(
     @ApiTransaction
     override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Unit, Exception> {
         if (!piiVault.isValid(bid.buyer)) {
-            throw BadRequestException("invalid user id ${bid.buyer}")
+            return Failure(BadRequestException("invalid user id ${bid.buyer}"))
         }
-
-        return loadAuction(auctionId)
+        val auction = loadAuction(auctionId) ?:
+            return Failure(NotFoundException("no auction found with id $auctionId"))
+        return auction
             .placeBid(bid.buyer, bid.amount).map {
                 repository.updateAuction(it)
             }
@@ -129,8 +130,8 @@ class AuctionServiceImpl(
 
     @ApiTransaction
     override fun closeAuction(auctionId: AuctionId): AuctionResult {
-        val auction = loadAuction(auctionId)
-            .close()
+        val auction = loadAuction(auctionId)?.close()
+            ?: throw NotFoundException("no auction found with id $auctionId")
         val updated = repository.updateAuction(auction)
 
         return when (val result = updated.winner) {
@@ -142,10 +143,7 @@ class AuctionServiceImpl(
         }
     }
 
-    private fun loadAuction(auctionId: AuctionId): Auction {
-        return repository.getAuction(auctionId)
-            ?: throw NotFoundException("no auction found with id $auctionId")
-    }
+    private fun loadAuction(auctionId: AuctionId) = repository.getAuction(auctionId)
 }
 
 private fun checkCount(count: Int) {
