@@ -22,13 +22,13 @@ data class Auction(
     val chargePerBid: MonetaryAmount,
     val id: AuctionId,
     var state: AuctionState,
-    var bids: MutableList<Bid>,
+    val bids: List<Bid>,
     var winner: AuctionWinner?
 ) {
     fun saved(newId: AuctionId) =
         copy(id = newId)
     
-    fun placeBid(buyer: UserId, bid: Money) {
+    fun placeBid(buyer: UserId, bid: Money): Auction {
         if (buyer == seller) {
             throw BadRequestException("shill bidding detected by $seller")
         }
@@ -42,7 +42,7 @@ data class Auction(
             throw WrongStateException("auction $id is closed")
         }
         
-        bids.add(Bid(buyer, bid.amount))
+        return copy(bids = bids + Bid(buyer, bid.amount))
     }
     
     fun close() {

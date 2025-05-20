@@ -24,17 +24,17 @@ class InMemoryAuctionRepository : AuctionRepository {
     override fun getAuction(id: AuctionId) =
         auctions[id]
     
-    override fun updateAuction(auction: Auction) {
-        auction.bids = auction.bids.map {
+    override fun updateAuction(auction: Auction): Auction {
+        val updated = auction.copy(bids = auction.bids.map {
             if (it.id == BidId.NONE) {
                 it.copy(id = BidId(nextBidId++))
             } else {
                 it
             }
-        }.toMutableList()
+        })
         
-        // TODO: ask Nat if I can delete this line. It doesn't seem needed because we mutate the auction
-        // auctions[auction.id] = auction
+        auctions[updated.id] = updated
+        return updated
     }
     
     override fun listOpenAuctions(count: Int, after: AuctionId) =

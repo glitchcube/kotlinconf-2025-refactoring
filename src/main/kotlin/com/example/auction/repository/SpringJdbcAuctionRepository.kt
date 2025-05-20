@@ -68,7 +68,7 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
         return saved
     }
     
-    override fun updateAuction(auction: Auction) {
+    override fun updateAuction(auction: Auction): Auction {
         jdbcClient.sql(
             // language=sql
             """
@@ -81,9 +81,9 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
             .param("state", auction.state.name)
             .update()
         
-        insertNewBids(auction)
+        val updated = insertNewBids(auction)
         
-        auction.winner?.let { winner ->
+        updated.winner?.let { winner ->
             jdbcClient.sql(
                 """
                 MERGE INTO AUCTION_WINNER W
@@ -93,21 +93,23 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
                 WHEN NOT MATCHED THEN INSERT VALUES vals.AUCTION, vals.WINNER, vals.OWED
                 """
             )
-                .param("auctionId", auction.id.value)
+                .param("auctionId", updated.id.value)
                 .param("winner", winner.winner.value)
                 .param("owed", winner.owed.repr)
                 .update()
         }
+        
+        return updated
     }
     
-    private fun insertNewBids(auction: Auction) {
-        auction.bids = auction.bids.map { bid ->
+    private fun insertNewBids(auction: Auction) : Auction {
+        return auction.copy(bids = auction.bids.map { bid ->
             if (bid.id == BidId.NONE) {
                 insertBid(auction, bid)
             } else {
                 bid
             }
-        }.toMutableList()
+        })
     }
     
     private fun insertBid(auction: Auction, bid: Bid): Bid {

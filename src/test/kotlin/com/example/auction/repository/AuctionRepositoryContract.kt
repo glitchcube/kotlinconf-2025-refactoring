@@ -43,12 +43,13 @@ interface AuctionRepositoryContract {
     
     @Test
     fun `adding bids`() {
-        val auction = repository.addAuction(newBlindAuction())
-        val auctionId = auction.id
+        val original = repository.addAuction(newBlindAuction())
+            .placeBid(alice, 1.EUR)
+            .placeBid(bob, 2.EUR)
         
-        auction.placeBid(alice, 1.EUR)
-        auction.placeBid(bob, 2.EUR)
-        repository.updateAuction(auction)
+        val auction = repository.updateAuction(original)
+        
+        val auctionId = auction.id
         
         assertNotEquals(BidId.NONE, auction.bids[0].id, "bids[0]")
         assertNotEquals(BidId.NONE, auction.bids[1].id, "bids[1]")
