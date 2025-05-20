@@ -30,9 +30,7 @@ class AuctionSettlementService(
             val instruction = auction.settlement() ?: continue
 
             settlement.settle(instruction)
-            auction.settled()
-            
-            repository.updateAuction(auction)
+            repository.updateAuction(auction.settled())
         }
 
         return batch.lastOrNull()

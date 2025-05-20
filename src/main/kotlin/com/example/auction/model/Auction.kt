@@ -2,6 +2,7 @@ package com.example.auction.model
 
 import com.example.auction.model.AuctionState.closed
 import com.example.auction.model.AuctionState.open
+import com.example.auction.model.AuctionState.settled
 import com.example.auction.model.MonetaryAmount.Companion.ZERO
 import com.example.pii.UserId
 import com.example.settlement.Charge
@@ -21,9 +22,9 @@ data class Auction(
     val commission: MonetaryAmount,
     val chargePerBid: MonetaryAmount,
     val id: AuctionId,
-    var state: AuctionState,
+    val state: AuctionState,
     val bids: List<Bid>,
-    var winner: AuctionWinner?
+    val winner: AuctionWinner?
 ) {
     fun saved(newId: AuctionId) =
         copy(id = newId)
@@ -45,19 +46,18 @@ data class Auction(
         return copy(bids = bids + Bid(buyer, bid.amount))
     }
     
-    fun close() {
-        state = closed
-        winner = decideWinner()
+    fun close(): Auction {
+        return copy(state = closed, winner = decideWinner())
     }
     
     fun decideWinner() = rules.decideWinner(this)
     
-    fun settled() {
+    fun settled(): Auction {
         if (state == open) {
             throw WrongStateException("auction $id not closed")
         }
         
-        state = AuctionState.settled
+        return copy(state = settled)
     }
     
     fun settlement(): SettlementInstruction? {

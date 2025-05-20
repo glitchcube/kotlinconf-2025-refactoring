@@ -76,7 +76,7 @@ interface AuctionRepositoryContract {
         
         run {
             val loaded = load(auctionId)
-            loaded.winner = AuctionWinner(winner = bob, owed = MonetaryAmount("2.00"))
+                .copy(winner = AuctionWinner(winner = bob, owed = MonetaryAmount("2.00")))
             repository.updateAuction(loaded)
         }
         
@@ -103,15 +103,12 @@ interface AuctionRepositoryContract {
     @Test
     fun `listing auctions for settlement`() {
         val auctions = (1..8).map { i ->
-            val auction = newBlindAuction(i)
-            repository.addAuction(auction)
-            auction
+            repository.addAuction(newBlindAuction(i))
         }
         
         val closedAuctions = repository.listOpenAuctions(count = 3, after = auctions[1].id)
             .map {
-                it.close()
-                repository.updateAuction(it)
+                repository.updateAuction(it.close())
                 repository.getAuction(it.id)
                     ?: fail("could not reload closed auction")
             }
