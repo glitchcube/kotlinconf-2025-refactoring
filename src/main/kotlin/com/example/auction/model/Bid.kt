@@ -3,8 +3,8 @@ package com.example.auction.model
 import com.example.pii.UserId
 
 class Bid(
-    var buyer: UserId,
-    var amount: MonetaryAmount,
+    val buyer: UserId,
+    val amount: MonetaryAmount,
     
     var id: BidId = BidId.NONE
 ) {

@@ -15,15 +15,15 @@ import java.util.Currency
 abstract class Auction {
     abstract val rules: AuctionRules
     
-    abstract var seller: UserId
-    abstract var description: String
-    abstract var currency: Currency
-    abstract var reserve: MonetaryAmount
-    abstract var commission: MonetaryAmount
-    abstract var chargePerBid: MonetaryAmount
+    abstract val seller: UserId
+    abstract val description: String
+    abstract val currency: Currency
+    abstract val reserve: MonetaryAmount
+    abstract val commission: MonetaryAmount
+    abstract val chargePerBid: MonetaryAmount
     abstract var id: AuctionId
     abstract var state: AuctionState
-    abstract var bids: MutableList<Bid>
+    abstract val bids: MutableList<Bid>
     abstract var winner: AuctionWinner?
     
     fun placeBid(buyer: UserId, bid: Money) {
