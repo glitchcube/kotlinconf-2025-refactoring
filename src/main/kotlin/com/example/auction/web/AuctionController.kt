@@ -1,15 +1,17 @@
 package com.example.auction.web
 
 import com.example.auction.model.AuctionId
-import com.example.auction.service.AuctionResult
-import com.example.auction.service.AuctionService
-import com.example.auction.service.AuctionSummary
-import com.example.auction.service.BidRequest
-import com.example.auction.service.CreateAuctionRequest
-import com.example.auction.service.CreateAuctionResponse
+import com.example.auction.model.BadRequestException
+import com.example.auction.model.WrongStateException
+import com.example.auction.service.*
+import dev.forkhandles.result4k.map
 import dev.forkhandles.result4k.orThrow
+import dev.forkhandles.result4k.recover
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
+import org.springframework.http.ProblemDetail
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -43,7 +45,7 @@ class AuctionController(
         consumes = ["application/json"],
         produces = ["application/json"]
     )
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     @ResponseBody
     fun createAuction(@RequestBody rq: CreateAuctionRequest): CreateAuctionResponse {
         val newId = auctionService.createAuction(rq)
@@ -55,9 +57,19 @@ class AuctionController(
         consumes = ["application/json"],
         produces = []
     )
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun recordBid(@PathVariable auctionId: AuctionId, @RequestBody bid: BidRequest) {
-        auctionService.placeBid(auctionId, bid).orThrow()
+
+    fun recordBid(@PathVariable auctionId: AuctionId, @RequestBody bid: BidRequest): ResponseEntity<*> {
+        return auctionService.placeBid(auctionId, bid).map {
+            ResponseEntity<String>(NO_CONTENT)
+        }.recover { exception ->
+            val problemDetail = when (exception) {
+                is BadRequestException -> ProblemDetail.forStatusAndDetail(BAD_REQUEST, exception.message)
+                is NotFoundException -> ProblemDetail.forStatusAndDetail(NOT_FOUND, exception.message)
+                is WrongStateException -> ProblemDetail.forStatusAndDetail(CONFLICT, exception.message)
+                else -> throw exception
+            }
+            ResponseEntity.status(problemDetail.status).body(problemDetail)
+        }
     }
     
     @PostMapping(
