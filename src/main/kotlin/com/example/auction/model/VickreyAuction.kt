@@ -19,19 +19,19 @@ class VickreyAuction(
     override var winner: AuctionWinner? = null
 ) : Auction() {
     override val rules = Vickrey
-    
-    override fun decideWinner(): AuctionWinner? {
-        return bids
-            .associateBy { it.buyer }
-            .values
-            .sortedByDescending { it.amount }
-            .take(2)
-            .run {
-                when {
-                    isEmpty() -> null
-                    last().amount < reserve -> null
-                    else -> AuctionWinner(first().buyer, last().amount)
-                }
+}
+
+fun vickreyAuctionWinner(auction: Auction): AuctionWinner? {
+    return auction.bids
+        .associateBy { it.buyer }
+        .values
+        .sortedByDescending { it.amount }
+        .take(2)
+        .run {
+            when {
+                isEmpty() -> null
+                last().amount < auction.reserve -> null
+                else -> AuctionWinner(first().buyer, last().amount)
             }
-    }
+        }
 }

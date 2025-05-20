@@ -18,14 +18,14 @@ class ReverseAuction(
     override var winner: AuctionWinner? = null
 ) : Auction() {
     override val rules = Reverse
-    
-    override fun decideWinner(): AuctionWinner? {
-        return bids
-            .filter { it.amount >= reserve }
-            .groupBy { it.amount }
-            .values
-            .mapNotNull { it.singleOrNull() }
-            .minByOrNull { it.amount }
-            ?.toWinner()
-    }
+}
+
+fun reverseAuctionWinner(auction: Auction): AuctionWinner? {
+    return auction.bids
+        .filter { it.amount >= auction.reserve }
+        .groupBy { it.amount }
+        .values
+        .mapNotNull { it.singleOrNull() }
+        .minByOrNull { it.amount }
+        ?.toWinner()
 }
