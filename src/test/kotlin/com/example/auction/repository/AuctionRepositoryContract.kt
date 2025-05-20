@@ -25,9 +25,7 @@ interface AuctionRepositoryContract {
     
     @Test
     fun `save a new auction`() {
-        val auction = newBlindAuction()
-        
-        repository.addAuction(auction)
+        val auction = repository.addAuction(newBlindAuction())
         val auctionId = auction.id
         val loaded = load(auctionId)
         
@@ -45,8 +43,7 @@ interface AuctionRepositoryContract {
     
     @Test
     fun `adding bids`() {
-        val auction = newBlindAuction()
-        repository.addAuction(auction)
+        val auction = repository.addAuction(newBlindAuction())
         val auctionId = auction.id
         
         auction.placeBid(alice, 1.EUR)
@@ -69,8 +66,7 @@ interface AuctionRepositoryContract {
     
     @Test
     fun `saving and loading the winner`() {
-        val auction = newBlindAuction()
-        repository.addAuction(auction)
+        val auction = repository.addAuction(newBlindAuction())
         val auctionId = auction.id
         
         auction.placeBid(alice, 1.EUR)
@@ -92,15 +88,10 @@ interface AuctionRepositoryContract {
     
     @Test
     fun `listing open auctions`() {
-        val a1 = newBlindAuction(1)
-        val a2 = newVickreyAuction(2)
-        val a3 = newReverseAuction(3)
-        val a4 = newBlindAuction(4)
-        
-        repository.addAuction(a1)
-        repository.addAuction(a2)
-        repository.addAuction(a3)
-        repository.addAuction(a4)
+        val a1 = repository.addAuction(newBlindAuction(1))
+        val a2 = repository.addAuction(newVickreyAuction(2))
+        val a3 = repository.addAuction(newReverseAuction(3))
+        val a4 = repository.addAuction(newBlindAuction(4))
         
         val loaded = repository.listOpenAuctions(4, after = a1.id.predecessor())
         

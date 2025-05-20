@@ -14,10 +14,11 @@ class InMemoryAuctionRepository : AuctionRepository {
     private val auctions = mutableMapOf<AuctionId,Auction>()
     private var nextBidId = 1L
     
-    override fun addAuction(auction: Auction) {
+    override fun addAuction(auction: Auction): Auction {
         assertEquals(NONE, auction.id, "auction already has an ID")
-        auction.id = AuctionId(auctions.size + 1L)
-        auctions[auction.id] = auction
+        val saved = auction.saved(AuctionId(auctions.size + 1L))
+        auctions[saved.id] = saved
+        return saved
     }
     
     override fun getAuction(id: AuctionId) =

@@ -3,17 +3,11 @@ package com.example.auction.repository
 import com.example.auction.model.Auction
 import com.example.auction.model.AuctionId
 import com.example.auction.model.AuctionRules
-import com.example.auction.model.AuctionRules.Blind
-import com.example.auction.model.AuctionRules.Reverse
-import com.example.auction.model.AuctionRules.Vickrey
 import com.example.auction.model.AuctionState.valueOf
 import com.example.auction.model.AuctionWinner
 import com.example.auction.model.Bid
 import com.example.auction.model.BidId
-import com.example.auction.model.BlindAuction
 import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
 import com.example.pii.UserId
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.jdbc.support.GeneratedKeyHolder
@@ -46,7 +40,7 @@ private const val selectAuction = """
 class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
     private val jdbcClient = JdbcClient.create(dataSource)
     
-    override fun addAuction(auction: Auction) {
+    override fun addAuction(auction: Auction): Auction {
         val keyHolder = GeneratedKeyHolder()
         
         jdbcClient
@@ -69,9 +63,9 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
             .update(keyHolder)
         
         val newId = AuctionId(keyHolder.key?.toLong() ?: error("no ID generated"))
-        auction.id = newId
-        
-        insertNewBids(auction)
+        val saved = auction.saved(newId)
+        insertNewBids(saved)
+        return saved
     }
     
     override fun updateAuction(auction: Auction) {

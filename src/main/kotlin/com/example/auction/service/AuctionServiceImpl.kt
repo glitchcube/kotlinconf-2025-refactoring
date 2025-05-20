@@ -56,8 +56,7 @@ class AuctionServiceImpl(
             throw BadRequestException("invalid user id ${rq.seller}")
         }
         
-        val auction = newAuction(rq)
-        repository.addAuction(auction)
+        val auction = repository.addAuction(newAuction(rq))
         return auction.id
     }
     
