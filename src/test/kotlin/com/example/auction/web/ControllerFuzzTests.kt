@@ -2,7 +2,11 @@ package com.example.auction.web
 
 import com.example.auction.AuctionApplication
 import com.example.auction.acceptance.EUR
+import com.example.auction.model.Auction
 import com.example.auction.model.AuctionId
+import com.example.auction.model.BlindAuction
+import com.example.auction.model.ReverseAuction
+import com.example.auction.repository.AuctionRepositoryContract
 import com.example.auction.service.AuctionResult
 import com.example.auction.service.AuctionService
 import com.example.auction.service.AuctionSummary
@@ -14,6 +18,8 @@ import com.example.pii.UserId
 import com.natpryce.snodge.json.defaultJsonMutagens
 import com.natpryce.snodge.json.forStrings
 import com.natpryce.snodge.mutants
+import dev.forkhandles.result4k.Result4k
+import dev.forkhandles.result4k.asSuccess
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -96,7 +102,8 @@ class DummyAuctionService : AuctionService {
         return AuctionId(1)
     }
     
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest) {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Auction, Exception> {
+        return AuctionRepositoryContract.newReverseAuction(1).asSuccess()
     }
     
     override fun closeAuction(auctionId: AuctionId): AuctionResult {
