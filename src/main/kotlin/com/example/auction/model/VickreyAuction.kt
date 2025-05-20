@@ -14,7 +14,7 @@ class VickreyAuction(
     override val chargePerBid: MonetaryAmount = MonetaryAmount.ZERO,
     
     override var id: AuctionId = AuctionId.NONE,
-    override val bids: MutableList<Bid> = mutableListOf(),
+    override var bids: MutableList<Bid> = mutableListOf(),
     override var state: AuctionState = open,
     override var winner: AuctionWinner? = null
 ) : Auction() {

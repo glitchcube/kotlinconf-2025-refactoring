@@ -24,11 +24,13 @@ class InMemoryAuctionRepository : AuctionRepository {
         auctions[id]
     
     override fun updateAuction(auction: Auction) {
-        auction.bids.forEach {
+        auction.bids = auction.bids.map {
             if (it.id == BidId.NONE) {
-                it.id = BidId(nextBidId++)
+                it.copy(id = BidId(nextBidId++))
+            } else {
+                it
             }
-        }
+        }.toMutableList()
         
         // TODO: ask Nat if I can delete this line. It doesn't seem needed because we mutate the auction
         // auctions[auction.id] = auction

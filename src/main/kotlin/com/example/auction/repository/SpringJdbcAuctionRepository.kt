@@ -107,14 +107,16 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
     }
     
     private fun insertNewBids(auction: Auction) {
-        auction.bids.forEach { bid ->
+        auction.bids = auction.bids.map { bid ->
             if (bid.id == BidId.NONE) {
                 insertBid(auction, bid)
+            } else {
+                bid
             }
-        }
+        }.toMutableList()
     }
     
-    private fun insertBid(auction: Auction, bid: Bid) {
+    private fun insertBid(auction: Auction, bid: Bid): Bid {
         val keyHolder = GeneratedKeyHolder()
         
         jdbcClient
@@ -129,7 +131,7 @@ class SpringJdbcAuctionRepository(dataSource: DataSource) : AuctionRepository {
             .param("amount", bid.amount.repr)
             .update(keyHolder)
         
-        bid.id = BidId(keyHolder.key?.toLong() ?: error("no ID generated"))
+        return bid.copy(id = BidId(keyHolder.key?.toLong() ?: error("no ID generated")))
     }
     
     override fun getAuction(id: AuctionId): Auction? {

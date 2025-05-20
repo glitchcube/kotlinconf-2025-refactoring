@@ -23,7 +23,7 @@ abstract class Auction {
     abstract val chargePerBid: MonetaryAmount
     abstract var id: AuctionId
     abstract var state: AuctionState
-    abstract val bids: MutableList<Bid>
+    abstract var bids: MutableList<Bid>
     abstract var winner: AuctionWinner?
     
     fun placeBid(buyer: UserId, bid: Money) {
