@@ -38,6 +38,8 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-hsqldb")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation(platform("dev.forkhandles:forkhandles-bom:2.22.3.0"))
+    implementation("dev.forkhandles:result4k")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.hsqldb:hsqldb")
