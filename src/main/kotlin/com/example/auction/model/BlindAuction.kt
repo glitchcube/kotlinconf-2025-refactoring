@@ -5,7 +5,7 @@ import com.example.auction.model.AuctionState.open
 import com.example.pii.UserId
 import java.util.Currency
 
-class BlindAuction(
+fun BlindAuction(
     seller: UserId,
     description: String,
     currency: Currency,
@@ -16,7 +16,7 @@ class BlindAuction(
     bids: MutableList<Bid> = mutableListOf(),
     state: AuctionState = open,
     winner: AuctionWinner? = null
-) : Auction(
+) = Auction(
     rules = Blind,
     seller = seller,
     description = description,

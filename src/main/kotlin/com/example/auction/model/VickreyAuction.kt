@@ -5,7 +5,7 @@ import com.example.auction.model.AuctionState.open
 import com.example.pii.UserId
 import java.util.Currency
 
-open class VickreyAuction(
+fun VickreyAuction(
     seller: UserId,
     description: String,
     currency: Currency,
@@ -16,7 +16,7 @@ open class VickreyAuction(
     bids: MutableList<Bid> = mutableListOf(),
     state: AuctionState = open,
     winner: AuctionWinner? = null
-) : Auction(
+) = Auction(
     rules = Vickrey,
     seller = seller,
     description = description,

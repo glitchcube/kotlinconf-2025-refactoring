@@ -5,7 +5,7 @@ import com.example.auction.model.AuctionState.open
 import com.example.pii.UserId
 import java.util.Currency
 
-open class ReverseAuction(
+fun ReverseAuction(
     seller: UserId,
     description: String,
     currency: Currency,
@@ -16,7 +16,7 @@ open class ReverseAuction(
     bids: MutableList<Bid> = mutableListOf(),
     state: AuctionState = open,
     winner: AuctionWinner? = null
-) : Auction(
+) = Auction(
     rules = Reverse,
     seller = seller,
     description = description,

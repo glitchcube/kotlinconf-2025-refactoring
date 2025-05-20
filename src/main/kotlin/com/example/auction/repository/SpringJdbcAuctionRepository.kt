@@ -227,22 +227,17 @@ private fun ResultSet.toAuction(bids: MutableList<Bid>): Auction {
         )
     } else null
     
-    val constructor = when (rules) {
-        Blind -> ::BlindAuction
-        Vickrey -> ::VickreyAuction
-        Reverse -> ::ReverseAuction
-    }
-    
-    return constructor(
-        UserId(getString("SELLER")),
-        getString("DESCRIPTION"),
-        currency,
-        MonetaryAmount(getBigDecimal("RESERVE").setScale(currency.defaultFractionDigits)),
-        MonetaryAmount(getBigDecimal("COMMISSION")),
-        MonetaryAmount(getBigDecimal("CHARGE_PER_BID")),
-        AuctionId(getLong("ID")),
-        bids,
-        valueOf(getString("STATE")),
-        winner
+    return Auction(
+        rules = rules,
+        seller = UserId(getString("SELLER")),
+        description = getString("DESCRIPTION"),
+        currency = currency,
+        reserve = MonetaryAmount(getBigDecimal("RESERVE").setScale(currency.defaultFractionDigits)),
+        commission = MonetaryAmount(getBigDecimal("COMMISSION")),
+        chargePerBid = MonetaryAmount(getBigDecimal("CHARGE_PER_BID")),
+        id = AuctionId(getLong("ID")),
+        bids = bids,
+        state = valueOf(getString("STATE")),
+        winner = winner
     )
 }

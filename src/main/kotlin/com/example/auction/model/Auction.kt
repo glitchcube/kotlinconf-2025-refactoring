@@ -12,7 +12,7 @@ import java.math.RoundingMode.DOWN
 import java.math.RoundingMode.UP
 import java.util.Currency
 
-open class Auction(
+class Auction(
     val rules: AuctionRules,
     val seller: UserId,
     val description: String,
