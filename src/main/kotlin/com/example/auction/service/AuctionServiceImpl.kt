@@ -1,20 +1,12 @@
 package com.example.auction.service
 
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.BadRequestException
-import com.example.auction.model.BlindAuction
-import com.example.auction.model.MonetaryAmount
+import com.example.auction.model.*
 import com.example.auction.model.MonetaryAmount.Companion.ZERO
-import com.example.auction.model.Money
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
 import dev.forkhandles.result4k.Result4k
 import dev.forkhandles.result4k.asFailure
 import dev.forkhandles.result4k.map
-import dev.forkhandles.result4k.orThrow
 import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
@@ -117,7 +109,7 @@ class AuctionServiceImpl(
     }
     
     @ApiTransaction
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Auction, Exception> {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Auction, AuctionError> {
         if (!piiVault.isValid(bid.buyer)) {
             return BadRequestException("invalid user id ${bid.buyer}").asFailure()
         }

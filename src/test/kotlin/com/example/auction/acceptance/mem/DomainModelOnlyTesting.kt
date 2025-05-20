@@ -3,6 +3,7 @@ package com.example.auction.acceptance.mem
 import com.example.auction.acceptance.AuctionTesting
 import com.example.auction.model.AuctionId
 import com.example.auction.model.Money
+import com.example.auction.model.orThrow
 import com.example.auction.repository.InMemoryAuctionRepository
 import com.example.auction.service.AuctionServiceImpl
 import com.example.auction.service.AuctionSettlementService
@@ -15,8 +16,6 @@ import com.example.settlement.SettlementInstruction
 import com.example.simulators.pii_vault.PiiVaultSimulatorService
 import com.example.simulators.settlement.SettlementSimulatorService
 import com.example.simulators.settlement.get
-import dev.forkhandles.result4k.orThrow
-
 
 abstract class DomainModelOnlyTesting : AuctionTesting {
     private val piiVault = PiiVaultSimulatorService()

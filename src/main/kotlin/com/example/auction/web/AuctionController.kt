@@ -2,13 +2,12 @@ package com.example.auction.web
 
 import com.example.auction.model.AuctionId
 import com.example.auction.model.BadRequestException
+import com.example.auction.model.NotFoundException
 import com.example.auction.model.WrongStateException
 import com.example.auction.service.*
 import dev.forkhandles.result4k.map
-import dev.forkhandles.result4k.orThrow
 import dev.forkhandles.result4k.recover
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
@@ -66,7 +65,6 @@ class AuctionController(
                 is BadRequestException -> ProblemDetail.forStatusAndDetail(BAD_REQUEST, exception.message)
                 is NotFoundException -> ProblemDetail.forStatusAndDetail(NOT_FOUND, exception.message)
                 is WrongStateException -> ProblemDetail.forStatusAndDetail(CONFLICT, exception.message)
-                else -> throw exception
             }
             ResponseEntity.status(problemDetail.status).body(problemDetail)
         }

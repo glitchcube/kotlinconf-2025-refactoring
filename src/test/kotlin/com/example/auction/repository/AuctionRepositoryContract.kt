@@ -2,18 +2,9 @@ package com.example.auction.repository
 
 import com.example.auction.EUR
 import com.example.auction.acceptance.EUR
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.AuctionWinner
-import com.example.auction.model.Bid
-import com.example.auction.model.BidId
-import com.example.auction.model.BlindAuction
-import com.example.auction.model.MonetaryAmount
-import com.example.auction.model.ReverseAuction
-import com.example.auction.model.VickreyAuction
+import com.example.auction.model.*
 import com.example.pii.UserId
 import dev.forkhandles.result4k.flatMap
-import dev.forkhandles.result4k.orThrow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

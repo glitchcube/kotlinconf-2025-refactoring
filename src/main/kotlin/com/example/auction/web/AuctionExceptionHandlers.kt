@@ -2,7 +2,7 @@ package com.example.auction.web
 
 import com.example.auction.model.BadRequestException
 import com.example.auction.model.WrongStateException
-import com.example.auction.service.NotFoundException
+import com.example.auction.model.NotFoundException
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND

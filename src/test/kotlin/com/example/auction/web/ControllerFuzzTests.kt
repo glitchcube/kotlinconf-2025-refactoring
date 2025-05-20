@@ -2,10 +2,7 @@ package com.example.auction.web
 
 import com.example.auction.AuctionApplication
 import com.example.auction.acceptance.EUR
-import com.example.auction.model.Auction
-import com.example.auction.model.AuctionId
-import com.example.auction.model.BlindAuction
-import com.example.auction.model.ReverseAuction
+import com.example.auction.model.*
 import com.example.auction.repository.AuctionRepositoryContract
 import com.example.auction.service.AuctionResult
 import com.example.auction.service.AuctionService
@@ -102,7 +99,7 @@ class DummyAuctionService : AuctionService {
         return AuctionId(1)
     }
     
-    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Auction, Exception> {
+    override fun placeBid(auctionId: AuctionId, bid: BidRequest): Result4k<Auction, AuctionError> {
         return AuctionRepositoryContract.newReverseAuction(1).asSuccess()
     }
     

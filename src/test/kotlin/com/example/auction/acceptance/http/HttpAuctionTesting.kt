@@ -10,7 +10,7 @@ import com.example.auction.service.AuctionSummary
 import com.example.auction.service.BidRequest
 import com.example.auction.service.CreateAuctionRequest
 import com.example.auction.service.CreateAuctionResponse
-import com.example.auction.service.NotFoundException
+import com.example.auction.model.NotFoundException
 import com.example.pii.UserId
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

@@ -35,7 +35,7 @@ data class Auction(
     fun placeBid(
         buyer: UserId,
         bid: Money,
-    ): Result4k<Auction, Exception> {
+    ): Result4k<Auction, AuctionError> {
         if (buyer == seller) {
             return BadRequestException("shill bidding detected by $seller").asFailure()
         }
