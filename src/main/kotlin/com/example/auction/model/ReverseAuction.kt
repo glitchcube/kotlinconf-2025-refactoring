@@ -5,20 +5,30 @@ import com.example.auction.model.AuctionState.open
 import com.example.pii.UserId
 import java.util.Currency
 
-class ReverseAuction(
-    override val seller: UserId,
-    override val description: String,
-    override val currency: Currency,
-    override val reserve: MonetaryAmount = MonetaryAmount.ZERO,
-    override val commission: MonetaryAmount = MonetaryAmount.ZERO,
-    override val chargePerBid: MonetaryAmount = MonetaryAmount.ZERO,
-    override var id: AuctionId = AuctionId.NONE,
-    override var bids: MutableList<Bid> = mutableListOf(),
-    override var state: AuctionState = open,
-    override var winner: AuctionWinner? = null
-) : Auction() {
-    override val rules = Reverse
-}
+open class ReverseAuction(
+    seller: UserId,
+    description: String,
+    currency: Currency,
+    reserve: MonetaryAmount = MonetaryAmount.ZERO,
+    commission: MonetaryAmount = MonetaryAmount.ZERO,
+    chargePerBid: MonetaryAmount = MonetaryAmount.ZERO,
+    id: AuctionId = AuctionId.NONE,
+    bids: MutableList<Bid> = mutableListOf(),
+    state: AuctionState = open,
+    winner: AuctionWinner? = null
+) : Auction(
+    rules = Reverse,
+    seller = seller,
+    description = description,
+    currency = currency,
+    reserve = reserve,
+    commission = commission,
+    chargePerBid = chargePerBid,
+    id = id,
+    state = state,
+    bids = bids,
+    winner = winner
+)
 
 fun reverseAuctionWinner(auction: Auction): AuctionWinner? {
     return auction.bids
