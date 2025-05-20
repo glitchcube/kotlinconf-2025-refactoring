@@ -9,6 +9,9 @@ import com.example.settlement.Charge
 import com.example.settlement.Collection
 import com.example.settlement.OrderId
 import com.example.settlement.SettlementInstruction
+import dev.forkhandles.result4k.Result4k
+import dev.forkhandles.result4k.asFailure
+import dev.forkhandles.result4k.asSuccess
 import java.math.RoundingMode.DOWN
 import java.math.RoundingMode.UP
 import java.util.Currency
@@ -28,24 +31,27 @@ data class Auction(
 ) {
     fun saved(newId: AuctionId) =
         copy(id = newId)
-    
-    fun placeBid(buyer: UserId, bid: Money): Auction {
+
+    fun placeBid(
+        buyer: UserId,
+        bid: Money,
+    ): Result4k<Auction, Exception> {
         if (buyer == seller) {
-            throw BadRequestException("shill bidding detected by $seller")
+            return BadRequestException("shill bidding detected by $seller").asFailure()
         }
         if (bid.currency != currency) {
-            throw BadRequestException("bid in wrong currency, should be $currency")
+            return  BadRequestException("bid in wrong currency, should be $currency").asFailure()
         }
         if (bid.amount == ZERO) {
-            throw BadRequestException("zero bid")
+            return BadRequestException("zero bid").asFailure()
         }
         if (state != open) {
-            throw WrongStateException("auction $id is closed")
+            return WrongStateException("auction $id is closed").asFailure()
         }
-        
-        return copy(bids = bids + Bid(buyer, bid.amount))
+
+        return copy(bids = bids + Bid(buyer, bid.amount)).asSuccess()
     }
-    
+
     fun close(): Auction {
         return copy(state = closed, winner = decideWinner())
     }

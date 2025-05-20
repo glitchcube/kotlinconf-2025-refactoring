@@ -11,6 +11,8 @@ import com.example.auction.model.ReverseAuction
 import com.example.auction.model.VickreyAuction
 import com.example.auction.repository.AuctionRepository
 import com.example.pii.UserIdValidator
+import dev.forkhandles.result4k.map
+import dev.forkhandles.result4k.orThrow
 import org.springframework.dao.ConcurrencyFailureException
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
@@ -117,11 +119,11 @@ class AuctionServiceImpl(
         if (!piiVault.isValid(bid.buyer)) {
             throw BadRequestException("invalid user id ${bid.buyer}")
         }
-        
-        val auction = loadAuction(auctionId)
+
+        loadAuction(auctionId)
             .placeBid(bid.buyer, bid.amount)
-        
-        repository.updateAuction(auction)
+            .map { withBids -> repository.updateAuction(withBids) }
+            .orThrow()
     }
     
     @ApiTransaction

@@ -12,6 +12,8 @@ import com.example.auction.model.MonetaryAmount
 import com.example.auction.model.ReverseAuction
 import com.example.auction.model.VickreyAuction
 import com.example.pii.UserId
+import dev.forkhandles.result4k.flatMap
+import dev.forkhandles.result4k.orThrow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -45,7 +47,8 @@ interface AuctionRepositoryContract {
     fun `adding bids`() {
         val original = repository.addAuction(newBlindAuction())
             .placeBid(alice, 1.EUR)
-            .placeBid(bob, 2.EUR)
+            .flatMap { it.placeBid(bob, 2.EUR) }
+            .orThrow()
         
         val auction = repository.updateAuction(original)
         
@@ -69,17 +72,14 @@ interface AuctionRepositoryContract {
     fun `saving and loading the winner`() {
         val auction = repository.addAuction(newBlindAuction())
         val auctionId = auction.id
-        
-        auction.placeBid(alice, 1.EUR)
-        auction.placeBid(bob, 2.EUR)
         repository.updateAuction(auction)
-        
+
         run {
             val loaded = load(auctionId)
                 .copy(winner = AuctionWinner(winner = bob, owed = MonetaryAmount("2.00")))
             repository.updateAuction(loaded)
         }
-        
+
         run {
             val loaded = load(auctionId)
             assertNotNull(loaded.winner)
